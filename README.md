@@ -1,1 +1,1 @@
-# djanlgo-web
+# django-web
