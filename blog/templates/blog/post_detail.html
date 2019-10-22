@@ -1,0 +1,11 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+
+    {{ object.title }}
+    {% if p.head_image %}
+        <img class="card-img-top" src="{{ p.head_image.url }}" alt="Card image cap">
+    {% else %}
+        <img class="card-img-top" src="https://picsum.photos/750/300/?random" alt="Card image cap">
+    {% endif %}
+{% endblock %}
+
