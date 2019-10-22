@@ -32,3 +32,13 @@ class PostUpdate(UpdateView):
     fields = [
         'title', 'content', 'head_image'
     ]
+
+
+def post_delete(request, pk):
+    post = Post.objects.get(pk=pk)
+
+    if request.user == post.author:
+        post.delete()
+        return redirect('/blog/')
+    else:
+        raise PermissionError('Post 삭제 권한이 없습니다.')

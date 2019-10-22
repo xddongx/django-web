@@ -15,8 +15,10 @@
 
 {% if object.head_image %}
     <img class="card-img-top" src="{{ p.head_image.url }}" alt="Card image cap">
-{% else %}
-    <img class="card-img-top" src="https://picsum.photos/750/300/?random" alt="Card image cap">
 {% endif %}
+    <hr/>
+    {% if request.user == object.author %}
+        <button type="button" class="btn btn-sm btn-outline-info float-right" onclick="location.href='/blog/{{ object.pk }}/post_delete/'">Delete</button>
+    {% endif %}
 {% endblock %}
 
