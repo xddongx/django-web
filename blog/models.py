@@ -21,3 +21,6 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return '/blog/{}/'.format(self.pk)
+
+    def get_update_url(self):
+        return self.get_absolute_url() + 'update/'

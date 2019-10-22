@@ -1,11 +1,22 @@
 {% extends 'blog/base.html' %}
 {% block content %}
-
-    {{ object.title }}
-    {% if p.head_image %}
-        <img class="card-img-top" src="{{ p.head_image.url }}" alt="Card image cap">
-    {% else %}
-        <img class="card-img-top" src="https://picsum.photos/750/300/?random" alt="Card image cap">
+    <h2 class="post-title">
+        {{ object.title }}
+    </h2>
+    {% if request.user == object.author %} <!-- request.user 현재 login 된 유저 object.author 이 들을 올린 사람-->
+        <button type="button" class="btn btn-sm btn-outline-info float-right" onclick="location.href='{{ object.get_update_url }}'">EDIT</button>
     {% endif %}
+    <p class="post-meta">Posted by
+        {{ object.author }}on {{ object.created }}</p>
+    <hr/>
+    <p>
+        {{ object.content }}
+    </p>
+
+{% if object.head_image %}
+    <img class="card-img-top" src="{{ p.head_image.url }}" alt="Card image cap">
+{% else %}
+    <img class="card-img-top" src="https://picsum.photos/750/300/?random" alt="Card image cap">
+{% endif %}
 {% endblock %}
 
