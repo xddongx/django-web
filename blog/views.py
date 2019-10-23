@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
+from django.views.decorators.http import require_POST
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from blog.models import Post
+from blog.models import Post, Comment
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import CommentForm
 
 
 class PostList(ListView):
@@ -10,10 +13,17 @@ class PostList(ListView):
     def get_queryset(self):
         return Post.objects.order_by('-created')
 
+
 class PostDetail(DetailView):
     model = Post
 
-class PostCreate(CreateView):
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(type(self),  self).get_context_data(**kwargs)
+        context['comment_form']=CommentForm()
+
+        return context
+
+class PostCreate(LoginRequiredMixin, CreateView):
     model = Post
     fields = [
         'title', 'content', 'head_image'
@@ -42,3 +52,18 @@ def post_delete(request, pk):
         return redirect('/blog/')
     else:
         raise PermissionError('Post 삭제 권한이 없습니다.')
+
+@require_POST
+def new_comment(request, pk):
+    post = Post.objects.get(pk=pk)
+
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid(): # comment_form이 유효한 경우에
+            comment = comment_form.save(commit=False) # post랑 author를 채워줘야 하기 때문에 지금 가져온 것엔 text뿐이다
+            comment.post = post
+            comment.author = request.user # 지금 사용하고있는 user
+            comment.save() # 세개를 다 채웠으니 저장해도 된다
+            return redirect(post.get_absolute_url())
+    else:
+        return redirect('/blog/')

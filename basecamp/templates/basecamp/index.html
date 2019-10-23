@@ -1,17 +1,13 @@
 {% extends 'blog/base.html' %}
 {% block content %}
-{% if user.is_authenticated %}
-    <div class="clearfix">
-        <button type="button" class="btn btn-sm btn-outline-info float-right" onclick="location.href='/blog/create/'">New Post</button>
-    </div>
-{% endif %}
-{% if object_list.exists %}
-{% for p in object_list %}
+
+{% if posts.exists %}
+{% for p in posts %}
 <a href="{{ p.get_absolute_url }}" id="read-more-post{{ p.pk }}">
     <h2 class="post-title">
         {{ p.title }}
     </h2>
-    <p style="margin-top:15ps;margin-bottom:15px;">
+    <p>
         {{ p.content | truncatewords:15 }}
     </p>
 </a>
@@ -26,8 +22,5 @@
 {% else %}
 <h3>아직 게시글이 없습니다.</h3>
 {% endif %}
-<!-- Pager -->
-    <div class="clearfix">
-        <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
-    </div>
+
 {% endblock %}

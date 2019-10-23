@@ -1,12 +1,14 @@
 {% extends 'blog/base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
     <h2 class="post-title">
         {{ object.title }}
     </h2>
     {% if request.user == object.author %} <!-- request.user 현재 login 된 유저 object.author 이 들을 올린 사람-->
         <button type="button" class="btn btn-sm btn-outline-info float-right" onclick="location.href='{{ object.get_update_url }}'">EDIT</button>
+        <button type="button" class="btn btn-sm btn-outline-info float-right" onclick="location.href='/blog/{{ object.pk }}/post_delete/'">Delete</button>
     {% endif %}
-    <p class="post-meta">Posted by
+    <p class="post-meta" style="margin-bottom:40px;">Posted by
         {{ object.author }}on {{ object.created }}</p>
     <hr/>
     <p>
@@ -14,11 +16,63 @@
     </p>
 
 {% if object.head_image %}
-    <img class="card-img-top" src="{{ p.head_image.url }}" alt="Card image cap">
+    <img class="card-img-top" src="{{ object.head_image.url }}" alt="Card image cap">
 {% endif %}
-    <hr/>
-    {% if request.user == object.author %}
-        <button type="button" class="btn btn-sm btn-outline-info float-right" onclick="location.href='/blog/{{ object.pk }}/post_delete/'">Delete</button>
-    {% endif %}
+<hr/>
+<!-- Comments Form -->
+<div class="card my-4">
+    <h5 class="card-header">Leave a Comment:</h5>
+    <div class="card-body">
+        {% if request.user.is_authenticated %}
+        <form method="POST" action="{{ object.get_absolute_url }}new_comment/">{% csrf_token %}
+            <div class="form-group">
+                {{ comment_form | crispy }}
+                <!--<textarea class="form-control"  rows="3">{{ comment_form }}</textarea>-->
+            </div>
+            <button type="submit" class="btn btn-sm btn-outline-info float-right" >Submit</button>
+        </form>
+        {% else %}
+            <p><h3>Log in 하세요</h3></p>
+        {% endif %}
+    </div>
+</div>
+<!--&lt;!&ndash; Comments Form &ndash;&gt;-->
+<!--<div class="card my-4">-->
+    <!--<h5 class="card-header">Leave a Comment:</h5>-->
+    <!--<div class="card-body">-->
+        <!--{% if request.user.is_authenticated %}-->
+        <!--<form method="post" action="{{ object.get_absolute_url }}new_comment/">{% csrf_token %} &lt;!&ndash; 보안상 form을 쓸때 사용한다 안전하게 왔다갔다 하기 위해서  &ndash;&gt;-->
+            <!--<div class="form-group">-->
+                <!--<input type="text">{{ comment_form | crispy }}-->
+            <!--</div>-->
+            <!--<button type="submit" class="btn btn-sm btn-outline-info float-right">Submit</button>-->
+        <!--</form>-->
+        <!--{% else %}-->
+            <!--<p><h3>Log in 하세요</h3></p>-->
+        <!--{% endif %}-->
+    <!--</div>-->
+<!--</div>-->
+
+<div id="comment-list">
+    <!-- Single Comment -->
+    {% for comment in object.comment_set.all %}
+    <div class="media mb-4" id="comment-id-{{ comment.pk }}">
+        {% if comment.author.socialaccount_set.all.0.get_avatar_url %}
+        <img width="50px" class="d-flex mr-3 rounded-circle" src="{{ comment.author.socialaccount_set.all.0.get_avatar_url }}" alt="">
+        {% else %}
+        <img width="50px" class="d-flex mr-3 rounded-circle" src="https://api.adorable.io/avatars/285/{{ comment.author }}.png" alt="">
+        {% endif %}
+        <div class="media-body">
+            {% if comment.author == request.user %}
+            <button class="btn btn-sm btn-outline-info float-right" onclick="location.href='/blog/edit_comment/{{ comment.pk }}'">edit</button>
+            <button class="btn btn-sm btn-outline-info float-right" data-toggle="modal" data-target="#deleteCommentModal-{{ comment.pk }}">delete</button>
+            {% endif %}
+            <h5 class="mt-0">{{ comment.author }} <small class="text-muted">{{ comment.created_at }}</small></h5>
+            {{ comment.text | safe }}  <!-- safe 하는 이유 태그가 그대로 올라 오는것을 막아줌-->
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
 {% endblock %}
 

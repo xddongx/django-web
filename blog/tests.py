@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from .models import Post
+from .models import Post, Comment
 from django.utils import timezone
 from bs4 import BeautifulSoup
 
@@ -15,6 +15,20 @@ def create_post(title, content, author):
 
     return blog_post
 
+def create_comment(post, text='a comment', author=None):
+    if author is None:
+        author, is_created=User.objects.get_or_create(
+            username='guest',
+            password='guestpassword'
+        )
+    comment = Comment.objects.create(
+        post = post,
+        text = text,
+        author = author
+    )
+
+    return comment
+
 class TestModel(TestCase):
     def setUp(self):
         self.client = Client()
@@ -26,6 +40,28 @@ class TestModel(TestCase):
             content='first content',
             author=self.author_000
         )
+
+    def test_comment(self):
+        post_000 = create_post(
+            title='first title',
+            content='first content',
+            author=self.author_000
+        )
+
+        self.assertEqual(Comment.objects.count(), 0)
+
+        comment_000 = create_comment(
+            post=post_000
+        )
+
+        comment_001 = create_comment(
+            post = post_000,
+            text = 'second comment'
+        )
+
+        self.assertEqual(Comment.objects.count(), 2)
+
+
 
 class TestView(TestCase):
     def setUp(self):
