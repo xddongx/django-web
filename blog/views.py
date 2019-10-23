@@ -77,3 +77,13 @@ class CommentUpdate(UpdateView):
         if comment.author != self.request.user:
             raise PermissionError('Comment 수정 권한이 없습니다.')
         return comment
+
+def comment_delete(request, pk):
+    comment = Comment.objects.get(pk=pk)
+    post = comment.post
+
+    if request.user == comment.author:
+        comment.delete()
+        return redirect(post.get_absolute_url())
+    else:
+        raise PermissionError('Comment 삭제 권한이 없습니다.')

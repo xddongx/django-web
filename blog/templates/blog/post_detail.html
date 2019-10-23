@@ -65,7 +65,7 @@
         <div class="media-body">
             {% if comment.author == request.user %}
             <button class="btn btn-sm btn-outline-info float-right" onclick="location.href='/blog/{{ comment.pk }}/update_comment/'">edit</button>
-            <button class="btn btn-sm btn-outline-info float-right" data-toggle="modal" data-target="#deleteCommentModal-{{ comment.pk }}">delete</button>
+            <button class="btn btn-sm btn-outline-info float-right" data-toggle="modal" onclick="location.href='/blog/{{ comment.pk }}/delete_comment/'">delete</button>
             {% endif %}
             <h5 class="mt-0">{{ comment.author }} <small class="text-muted">{{ comment.created_at }}</small></h5>
             {{ comment.text | safe }}  <!-- safe 하는 이유 태그가 그대로 올라 오는것을 막아줌-->
