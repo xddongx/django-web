@@ -34,7 +34,7 @@
 <body>
 
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav" >
     <div class="container">
         <a class="navbar-brand" href="/">Donghyeon</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,6 +55,21 @@
                 <li class="nav-item">
                     <a class="nav-link" href="contact.html">Contact</a>
                 </li>
+                <li class="nav-item">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a type="button" class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">{{ user }} <span class="caret"></span></a>
+                        <div class="dropdown-menu" aria-labelledby="download">
+                            <a class="dropdown-item" href="/accounts/logout/">Log out</a>
+                        </div>
+                    </li>
+                </li>
+                {% else %}
+                <!--<a type="button" class="btn btn-secondary" href="/accounts/login/"></a>-->
+                <a type="button" class="btn btn-secondary" data-toggle="modal" onclick="location.href='/accounts/login/' ">
+                    Log in
+                </a>
+                {% endif %}
             </ul>
         </div>
     </div>
