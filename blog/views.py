@@ -4,6 +4,8 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from blog.models import Post, Comment
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CommentForm
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 
 class PostList(ListView):
@@ -12,6 +14,7 @@ class PostList(ListView):
 
     def get_queryset(self):
         return Post.objects.order_by('-created')
+
 
 
 class PostDetail(DetailView):
@@ -36,6 +39,8 @@ class PostCreate(LoginRequiredMixin, CreateView):
             return super(type(self), self).form_valid(form)
         else:
             return redirect('/blog/')
+    def contect(request):
+        return HttpResponseRedirect(reverse('/blog/'))
 
 class PostUpdate(UpdateView):
     model = Post

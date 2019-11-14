@@ -1,0 +1,18 @@
+<header class="masthead" style="background-image: url(https://picsum.photos/750/300/?random)" >
+    <!--<img class="card-img-top" src="https://picsum.photos/750/300/?random" alt="Card image cap">-->
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    {% if object.title %}
+                        <h1>{{ object.title }}</h1>
+                        <h5>{{ object.created }}</h5>
+                    {% else %}
+                        <h1>Donghyeon</h1>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
